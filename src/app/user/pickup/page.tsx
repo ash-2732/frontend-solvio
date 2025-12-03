@@ -38,6 +38,9 @@ export default function PickupPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [expandedListings, setExpandedListings] = useState<Set<string>>(new Set());
+    const [acceptingBidId, setAcceptingBidId] = useState<string | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [acceptedBidData, setAcceptedBidData] = useState<any>(null);
 
     useEffect(() => {
         const fetchListings = async () => {
@@ -49,10 +52,8 @@ export default function PickupPage() {
             try {
                 // Fetch user's listings
                 const res = await apiRequest("/listings/my", { auth: true, token }) as any;
-                // Filter only listings with accepted bids or picked_up status
-                const pickupListings = (res.items || []).filter((listing: any) => 
-                    listing.status === 'accepted' || listing.status === 'picked_up'
-                );
+                // Show all listings
+                const pickupListings = res.items || [];
 
                 // Fetch bids for each listing
                 const listingsWithBidsData = await Promise.all(
@@ -94,6 +95,58 @@ export default function PickupPage() {
         });
     };
 
+    const handleAcceptBid = async (bidId: string) => {
+        if (!token) {
+            setError("Not authenticated. Please log in.");
+            return;
+        }
+
+        setAcceptingBidId(bidId);
+        try {
+            const response = await apiRequest(`/bids/${bidId}/accept`, {
+                method: "PATCH",
+                auth: true,
+                token,
+            });
+
+            // Show modal with response
+            setAcceptedBidData(response);
+            setShowModal(true);
+
+            // Refresh listings
+            const res = await apiRequest("/listings/my", { auth: true, token }) as any;
+            const pickupListings = res.items || [];
+
+            const listingsWithBidsData = await Promise.all(
+                pickupListings.map(async (listing: any) => {
+                    try {
+                        const bids = await apiRequest(`/bids/listing/${listing.id}`, { 
+                            auth: true, 
+                            token 
+                        }) as Bid[];
+                        return { listing, bids };
+                    } catch (e) {
+                        console.error(`Error fetching bids for listing ${listing.id}:`, e);
+                        return { listing, bids: [] };
+                    }
+                })
+            );
+
+            setListingsWithBids(listingsWithBidsData);
+            setError(null);
+        } catch (e: any) {
+            console.error("Error accepting bid:", e);
+            setError(e?.message || "Failed to accept bid");
+        } finally {
+            setAcceptingBidId(null);
+        }
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setAcceptedBidData(null);
+    };
+
     return (
         <ProtectedRoute>
             <div className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -101,8 +154,8 @@ export default function PickupPage() {
                     {/* Header */}
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h1 className="text-3xl font-bold text-slate-900 mb-2">Pickup Requests</h1>
-                            <p className="text-slate-600">View your listings with accepted bids ready for pickup</p>
+                            <h1 className="text-3xl font-bold text-slate-900 mb-2">My Listings</h1>
+                            <p className="text-slate-600">View all your listings and manage bids</p>
                         </div>
                         <Link 
                             href="/user/my-listings" 
@@ -118,10 +171,10 @@ export default function PickupPage() {
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                             <div className="flex items-center gap-3">
                                 <div className="p-3 bg-emerald-100 rounded-lg">
-                                    <CheckCircle className="w-6 h-6 text-emerald-600" />
+                                    <Package className="w-6 h-6 text-emerald-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-slate-600">Total Pickups</p>
+                                    <p className="text-sm text-slate-600">Total Listings</p>
                                     <p className="text-2xl font-bold text-slate-900">{listingsWithBids.length}</p>
                                 </div>
                             </div>
@@ -132,9 +185,9 @@ export default function PickupPage() {
                                     <Clock className="w-6 h-6 text-yellow-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-slate-600">Pending Pickup</p>
+                                    <p className="text-sm text-slate-600">Bidding</p>
                                     <p className="text-2xl font-bold text-slate-900">
-                                        {listingsWithBids.filter(item => item.listing.status === 'accepted').length}
+                                        {listingsWithBids.filter(item => item.listing.status === 'bidding').length}
                                     </p>
                                 </div>
                             </div>
@@ -142,12 +195,12 @@ export default function PickupPage() {
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                             <div className="flex items-center gap-3">
                                 <div className="p-3 bg-blue-100 rounded-lg">
-                                    <Truck className="w-6 h-6 text-blue-600" />
+                                    <CheckCircle className="w-6 h-6 text-blue-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-slate-600">Completed</p>
+                                    <p className="text-sm text-slate-600">Accepted</p>
                                     <p className="text-2xl font-bold text-slate-900">
-                                        {listingsWithBids.filter(item => item.listing.status === 'picked_up').length}
+                                        {listingsWithBids.filter(item => item.listing.status === 'accepted').length}
                                     </p>
                                 </div>
                             </div>
@@ -166,14 +219,14 @@ export default function PickupPage() {
                     ) : listingsWithBids.length === 0 ? (
                         <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 border-dashed">
                             <Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                            <p className="text-slate-500 font-medium mb-2">No pickup requests yet</p>
-                            <p className="text-slate-400 text-sm mb-6">Listings with accepted bids will appear here</p>
+                            <p className="text-slate-500 font-medium mb-2">No listings yet</p>
+                            <p className="text-slate-400 text-sm mb-6">Create your first listing to get started</p>
                             <Link 
-                                href="/user/my-listings" 
+                                href="/user/listings" 
                                 className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
                             >
                                 <Package className="w-4 h-4" />
-                                View My Listings
+                                Create Listing
                             </Link>
                         </div>
                     ) : (
@@ -223,11 +276,15 @@ export default function PickupPage() {
                                                         </div>
                                                     </div>
                                                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
-                                                        listing.status === 'accepted' 
+                                                        listing.status === 'bidding' 
                                                             ? 'bg-yellow-100 text-yellow-700' 
-                                                            : 'bg-green-100 text-green-700'
+                                                            : listing.status === 'accepted'
+                                                            ? 'bg-blue-100 text-blue-700'
+                                                            : listing.status === 'picked_up'
+                                                            ? 'bg-green-100 text-green-700'
+                                                            : 'bg-slate-100 text-slate-700'
                                                     }`}>
-                                                        {listing.status === 'accepted' ? 'Awaiting Pickup' : 'Picked Up'}
+                                                        {listing.status}
                                                     </span>
                                                 </div>
                                                 <p className="text-slate-600 text-sm mb-4 line-clamp-2">{listing.description}</p>
@@ -493,10 +550,30 @@ export default function PickupPage() {
                                                             </div>
 
                                                             {bid.message && (
-                                                                <div className="bg-white/50 p-3 rounded border border-slate-200">
+                                                                <div className="bg-white/50 p-3 rounded border border-slate-200 mb-3">
                                                                     <p className="text-xs text-slate-500 mb-1">Message:</p>
                                                                     <p className="text-sm text-slate-700">{bid.message}</p>
                                                                 </div>
+                                                            )}
+
+                                                            {bid.status === 'pending' && (
+                                                                <button
+                                                                    onClick={() => handleAcceptBid(bid.id)}
+                                                                    disabled={acceptingBidId === bid.id}
+                                                                    className="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                                                >
+                                                                    {acceptingBidId === bid.id ? (
+                                                                        <>
+                                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                                            Accepting...
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <CheckCircle className="w-4 h-4" />
+                                                                            Accept Bid
+                                                                        </>
+                                                                    )}
+                                                                </button>
                                                             )}
                                                         </div>
                                                     ))}
@@ -509,6 +586,49 @@ export default function PickupPage() {
                                 </Link>
                                 );
                             })}
+                        </div>
+                    )}
+
+                    {/* Success Modal */}
+                    {showModal && acceptedBidData && (
+                        <div className="fixed inset-0 backdrop-blur-sm bg-slate-900/30 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+                            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all animate-in zoom-in-95 duration-200">
+                                <div className="text-center mb-6">
+                                    <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <CheckCircle className="w-10 h-10 text-emerald-600" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-slate-900 mb-2">Bid Accepted!</h3>
+                                    <p className="text-slate-600">The bid has been successfully accepted</p>
+                                </div>
+
+                                <div className="bg-slate-50 rounded-lg p-4 space-y-3 mb-6">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm text-slate-600">Bid ID:</span>
+                                        <span className="text-sm font-mono text-slate-900">{acceptedBidData.id?.slice(0, 8)}...</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm text-slate-600">Offered Price:</span>
+                                        <span className="text-lg font-bold text-emerald-600">৳{acceptedBidData.offered_price}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm text-slate-600">Pickup Time:</span>
+                                        <span className="text-sm font-semibold text-slate-900">{acceptedBidData.pickup_time_estimate}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm text-slate-600">Status:</span>
+                                        <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full uppercase">
+                                            {acceptedBidData.status}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={closeModal}
+                                    className="w-full px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+                                >
+                                    Close
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>

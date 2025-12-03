@@ -9,20 +9,15 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function Home() {
   const { t } = useLanguage();
+  const { colors } = useTheme();
 
   return (
-  <div className="relative min-h-screen bg-linear-to-br from-green-50 via-emerald-50 to-teal-50">
-      {/* Animated Background Orbs - Behind all content */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-teal-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
-      </div>
-
-      {/* All existing content - unchanged */}
+  <div className="relative min-h-screen">
+      {/* All existing content */}
       <div className="relative z-10">
         {/* Enhanced Hero Section */}
         <section className="flex-1 relative overflow-hidden">
@@ -33,7 +28,7 @@ export default function Home() {
               style={{ animationPlayState: "running" }}
             >
               <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-green-100 to-emerald-100 text-green-700 text-sm font-medium mb-6 fade-in"
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${colors.featureCardBg} ${colors.primary} text-sm font-medium mb-6 fade-in`}
                 style={{ animationPlayState: "running" }}
               >
                 <svg
@@ -57,11 +52,11 @@ export default function Home() {
                 <span>{t("trustedBy")}</span>
               </div>
               <h1 className="sm:text-5xl lg:text-6xl xl:text-7xl leading-tight fade-in-delay-1 text-4xl font-normal tracking-tighter mb-6">
-                <span className="bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                <span className={`bg-clip-text text-transparent ${colors.bgGradientLight}`}>
                   {t("heroTitleSmart")}
                 </span>
                 <span className="inline-flex items-center gap-2">
-                  <Leaf className="w-8 h-8 sm:w-10 sm:h-10 text-green-500" />
+                  <Leaf className={`w-8 h-8 sm:w-10 sm:h-10 ${colors.primaryLight}`} />
                 </span>
                 <br />
                 <span className="text-slate-900">{t("heroTitleWaste")}</span>
@@ -74,7 +69,7 @@ export default function Home() {
                 {t("heroDescription")}
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 fade-in-delay-3">
-                <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                <button className={`inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl ${colors.buttonBg} ${colors.buttonBgHover} ${colors.buttonText} font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1`}>
                   <ArrowRight className="w-5 h-5" />
                   {t("startJourney")}
                 </button>
@@ -106,7 +101,7 @@ export default function Home() {
                   <div className="flex-1 h-px bg-linear-to-r from-slate-200 to-transparent" />
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-6 items-center">
-                  <div className="flex items-center justify-center p-4 rounded-lg bg-white border border-slate-100 hover:border-green-200 transition-colors duration-200">
+                  <div className={`flex items-center justify-center p-4 rounded-lg bg-white border ${colors.borderLight} hover:${colors.borderLight} transition-colors duration-200`}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width={24}
@@ -117,7 +112,7 @@ export default function Home() {
                       strokeWidth={2}
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="w-6 h-6 text-green-500"
+                      className={`w-6 h-6 ${colors.primaryLight}`}
                     >
                       <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
                       <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
@@ -198,7 +193,7 @@ export default function Home() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-slate-900 mb-4">
-                {t("whyChoose")} <span className="text-green-600">ZeroBin</span>
+                {t("whyChoose")} <span className={colors.primary}>ZeroBin</span>
                 ?
               </h2>
               <p className="text-lg text-slate-600 max-w-2xl mx-auto">
@@ -208,8 +203,8 @@ export default function Home() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {/* Feature 1 */}
-              <div className="p-8 rounded-2xl bg-linear-to-br from-green-50 to-emerald-50 border border-green-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                <div className="w-14 h-14 bg-linear-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center mb-6">
+              <div className={`p-8 rounded-2xl ${colors.featureCardBg} border ${colors.featureCardBorder} hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
+                <div className={`w-14 h-14 ${colors.featureIconBg} rounded-xl flex items-center justify-center mb-6`}>
                   <LayoutDashboard className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-3">
@@ -221,8 +216,8 @@ export default function Home() {
               </div>
 
               {/* Feature 2 */}
-              <div className="p-8 rounded-2xl bg-linear-to-br from-green-50 to-emerald-50 border border-green-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                <div className="w-14 h-14 bg-linear-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center mb-6">
+              <div className={`p-8 rounded-2xl ${colors.featureCardBg} border ${colors.featureCardBorder} hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
+                <div className={`w-14 h-14 ${colors.featureIconBg} rounded-xl flex items-center justify-center mb-6`}>
                   <Truck className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-3">
@@ -234,8 +229,8 @@ export default function Home() {
               </div>
 
               {/* Feature 3 */}
-              <div className="p-8 rounded-2xl bg-linear-to-br from-green-50 to-emerald-50 border border-green-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                <div className="w-14 h-14 bg-linear-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center mb-6">
+              <div className={`p-8 rounded-2xl ${colors.featureCardBg} border ${colors.featureCardBorder} hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
+                <div className={`w-14 h-14 ${colors.featureIconBg} rounded-xl flex items-center justify-center mb-6`}>
                   <BarChart3 className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-3">
@@ -247,8 +242,8 @@ export default function Home() {
               </div>
 
               {/* Feature 4 */}
-              <div className="p-8 rounded-2xl bg-linear-to-br from-green-50 to-emerald-50 border border-green-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                <div className="w-14 h-14 bg-linear-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center mb-6">
+              <div className={`p-8 rounded-2xl ${colors.featureCardBg} border ${colors.featureCardBorder} hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
+                <div className={`w-14 h-14 ${colors.featureIconBg} rounded-xl flex items-center justify-center mb-6`}>
                   <Leaf className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-3">
@@ -260,8 +255,8 @@ export default function Home() {
               </div>
 
               {/* Feature 5 */}
-              <div className="p-8 rounded-2xl bg-linear-to-br from-green-50 to-emerald-50 border border-green-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                <div className="w-14 h-14 bg-linear-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center mb-6">
+              <div className={`p-8 rounded-2xl ${colors.featureCardBg} border ${colors.featureCardBorder} hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
+                <div className={`w-14 h-14 ${colors.featureIconBg} rounded-xl flex items-center justify-center mb-6`}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -286,8 +281,8 @@ export default function Home() {
               </div>
 
               {/* Feature 6 */}
-              <div className="p-8 rounded-2xl bg-linear-to-br from-green-50 to-emerald-50 border border-green-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                <div className="w-14 h-14 bg-linear-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center mb-6">
+              <div className={`p-8 rounded-2xl ${colors.featureCardBg} border ${colors.featureCardBorder} hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
+                <div className={`w-14 h-14 ${colors.featureIconBg} rounded-xl flex items-center justify-center mb-6`}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -322,7 +317,7 @@ export default function Home() {
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-slate-900 mb-4">
                 {t("howItWorks").split(" ")[0]} {t("howItWorks").split(" ")[1]}{" "}
-                <span className="text-green-600">
+                <span className={colors.primary}>
                   {t("howItWorks").split(" ")[2]}
                 </span>
               </h2>
@@ -335,10 +330,10 @@ export default function Home() {
               {/* Step 1 */}
               <div className="text-center">
                 <div className="relative mb-8">
-                  <div className="w-20 h-20 bg-linear-to-br from-green-600 to-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                  <div className={`w-20 h-20 ${colors.featureIconBg} rounded-full flex items-center justify-center mx-auto shadow-lg`}>
                     <span className="text-3xl font-bold text-white">1</span>
                   </div>
-                  <div className="absolute top-10 left-1/2 w-full h-0.5 bg-green-200 -z-10 hidden md:block"></div>
+                  <div className={`absolute top-10 left-1/2 w-full h-0.5 ${colors.borderLight} -z-10 hidden md:block`}></div>
                 </div>
                 <h3 className="text-2xl font-semibold text-slate-900 mb-4">
                   {t("step1Title")}
@@ -351,10 +346,10 @@ export default function Home() {
               {/* Step 2 */}
               <div className="text-center">
                 <div className="relative mb-8">
-                  <div className="w-20 h-20 bg-linear-to-br from-green-600 to-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                  <div className={`w-20 h-20 ${colors.featureIconBg} rounded-full flex items-center justify-center mx-auto shadow-lg`}>
                     <span className="text-3xl font-bold text-white">2</span>
                   </div>
-                  <div className="absolute top-10 left-1/2 w-full h-0.5 bg-green-200 -z-10 hidden md:block"></div>
+                  <div className={`absolute top-10 left-1/2 w-full h-0.5 ${colors.borderLight} -z-10 hidden md:block`}></div>
                 </div>
                 <h3 className="text-2xl font-semibold text-slate-900 mb-4">
                   {t("step2Title")}
@@ -367,7 +362,7 @@ export default function Home() {
               {/* Step 3 */}
               <div className="text-center">
                 <div className="relative mb-8">
-                  <div className="w-20 h-20 bg-linear-to-br from-green-600 to-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                  <div className={`w-20 h-20 ${colors.featureIconBg} rounded-full flex items-center justify-center mx-auto shadow-lg`}>
                     <span className="text-3xl font-bold text-white">3</span>
                   </div>
                 </div>
@@ -383,7 +378,7 @@ export default function Home() {
         </section>
 
         {/* Stats Section */}
-  <section className="py-20 bg-linear-to-r from-green-600 to-emerald-600">
+  <section className={`py-20 ${colors.statsBg}`}>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-4 gap-8 text-center">
               <div>

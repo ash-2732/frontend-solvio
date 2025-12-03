@@ -43,6 +43,9 @@ export default function Navbar() {
   // Get role-based colors
   const roleColors = getRoleColorClasses(user?.user_type);
 
+  // Get role-based colors
+  // const roleColors = getRoleColorClasses(user?.user_type);
+
   const toggleLanguage = () => {
     setLanguage(language === "en" ? "bn" : "en");
   };

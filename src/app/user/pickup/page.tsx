@@ -52,8 +52,10 @@ export default function PickupPage() {
             try {
                 // Fetch user's listings
                 const res = await apiRequest("/listings/my", { auth: true, token }) as any;
-                // Show all listings
-                const pickupListings = res.items || [];
+                // Filter only listings with accepted bids or picked_up status
+                const pickupListings = (res.items || []).filter((listing: any) => 
+                    listing.status === 'accepted' || listing.status === 'picked_up'
+                );
 
                 // Fetch bids for each listing
                 const listingsWithBidsData = await Promise.all(
@@ -154,8 +156,8 @@ export default function PickupPage() {
                     {/* Header */}
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h1 className="text-3xl font-bold text-slate-900 mb-2">My Listings</h1>
-                            <p className="text-slate-600">View all your listings and manage bids</p>
+                            <h1 className="text-3xl font-bold text-slate-900 mb-2">Pickup Requests</h1>
+                            <p className="text-slate-600">View your listings with accepted bids ready for pickup</p>
                         </div>
                         <Link 
                             href="/user/my-listings" 
@@ -171,10 +173,10 @@ export default function PickupPage() {
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                             <div className="flex items-center gap-3">
                                 <div className="p-3 bg-emerald-100 rounded-lg">
-                                    <Package className="w-6 h-6 text-emerald-600" />
+                                    <CheckCircle className="w-6 h-6 text-emerald-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-slate-600">Total Listings</p>
+                                    <p className="text-sm text-slate-600">Total Pickups</p>
                                     <p className="text-2xl font-bold text-slate-900">{listingsWithBids.length}</p>
                                 </div>
                             </div>
@@ -185,9 +187,9 @@ export default function PickupPage() {
                                     <Clock className="w-6 h-6 text-yellow-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-slate-600">Bidding</p>
+                                    <p className="text-sm text-slate-600">Pending Pickup</p>
                                     <p className="text-2xl font-bold text-slate-900">
-                                        {listingsWithBids.filter(item => item.listing.status === 'bidding').length}
+                                        {listingsWithBids.filter(item => item.listing.status === 'accepted').length}
                                     </p>
                                 </div>
                             </div>
@@ -195,12 +197,12 @@ export default function PickupPage() {
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                             <div className="flex items-center gap-3">
                                 <div className="p-3 bg-blue-100 rounded-lg">
-                                    <CheckCircle className="w-6 h-6 text-blue-600" />
+                                    <Truck className="w-6 h-6 text-blue-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-slate-600">Accepted</p>
+                                    <p className="text-sm text-slate-600">Completed</p>
                                     <p className="text-2xl font-bold text-slate-900">
-                                        {listingsWithBids.filter(item => item.listing.status === 'accepted').length}
+                                        {listingsWithBids.filter(item => item.listing.status === 'picked_up').length}
                                     </p>
                                 </div>
                             </div>
@@ -219,14 +221,14 @@ export default function PickupPage() {
                     ) : listingsWithBids.length === 0 ? (
                         <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 border-dashed">
                             <Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                            <p className="text-slate-500 font-medium mb-2">No listings yet</p>
-                            <p className="text-slate-400 text-sm mb-6">Create your first listing to get started</p>
+                            <p className="text-slate-500 font-medium mb-2">No pickup requests yet</p>
+                            <p className="text-slate-400 text-sm mb-6">Listings with accepted bids will appear here</p>
                             <Link 
-                                href="/user/listings" 
+                                href="/user/my-listings" 
                                 className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
                             >
                                 <Package className="w-4 h-4" />
-                                Create Listing
+                                View My Listings
                             </Link>
                         </div>
                     ) : (
@@ -276,15 +278,11 @@ export default function PickupPage() {
                                                         </div>
                                                     </div>
                                                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
-                                                        listing.status === 'bidding' 
+                                                        listing.status === 'accepted' 
                                                             ? 'bg-yellow-100 text-yellow-700' 
-                                                            : listing.status === 'accepted'
-                                                            ? 'bg-blue-100 text-blue-700'
-                                                            : listing.status === 'picked_up'
-                                                            ? 'bg-green-100 text-green-700'
-                                                            : 'bg-slate-100 text-slate-700'
+                                                            : 'bg-green-100 text-green-700'
                                                     }`}>
-                                                        {listing.status}
+                                                        {listing.status === 'accepted' ? 'Awaiting Pickup' : 'Picked Up'}
                                                     </span>
                                                 </div>
                                                 <p className="text-slate-600 text-sm mb-4 line-clamp-2">{listing.description}</p>
@@ -556,6 +554,7 @@ export default function PickupPage() {
                                                                 </div>
                                                             )}
 
+{/* BAAD DIBO LAGLE */}
                                                             {bid.status === 'pending' && (
                                                                 <button
                                                                     onClick={() => handleAcceptBid(bid.id)}
@@ -589,6 +588,7 @@ export default function PickupPage() {
                         </div>
                     )}
 
+{/* BAAD DIBO LAGLE */}
                     {/* Success Modal */}
                     {showModal && acceptedBidData && (
                         <div className="fixed inset-0 backdrop-blur-sm bg-slate-900/30 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">

@@ -295,7 +295,7 @@ export default function BinLevelPage() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
             {/* Average Fill Level */}
             <div className="bg-white/50 backdrop-blur-sm border border-slate-200/60 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-2">
@@ -307,6 +307,16 @@ export default function BinLevelPage() {
               <p className="text-2xl font-bold text-slate-900 mt-1">{stats.avgFillLevel}%</p>
             </div>
 
+            {/* Max Fill Level */}
+            <div className="bg-white/50 backdrop-blur-sm border border-slate-200/60 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-2">
+                <div className="w-10 h-10 bg-linear-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-white" />
+                </div>
+              </div>
+              <p className="text-sm text-slate-600 font-medium">Max Fill Level</p>
+              <p className="text-2xl font-bold text-red-600 mt-1">{stats.maxFillLevel}%</p>
+            </div>
 
             {/* Avg Fill Rate */}
             <div className="bg-white/50 backdrop-blur-sm border border-slate-200/60 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
@@ -893,6 +903,23 @@ export default function BinLevelPage() {
 
               {/* Modal Body */}
               <div className="p-6 space-y-6">
+                {/* Current Fill Level */}
+                <div className="bg-linear-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Activity className="w-6 h-6 text-blue-600" />
+                    <h3 className="text-lg font-semibold text-slate-800">Current Fill Level</h3>
+                  </div>
+                  <div className="text-4xl font-bold text-blue-600">
+                    {predictionResult.current_fill_level_percent.toFixed(1)}%
+                  </div>
+                  <div className="mt-3 bg-slate-200 rounded-full h-3 overflow-hidden">
+                    <div
+                      className="bg-linear-to-r from-blue-500 to-cyan-500 h-full transition-all duration-500"
+                      style={{ width: `${predictionResult.current_fill_level_percent}%` }}
+                    />
+                  </div>
+                </div>
+
                 {/* Predicted Time to Full */}
                 <div className="bg-linear-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                   <div className="flex items-center gap-3 mb-3">

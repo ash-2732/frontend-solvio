@@ -113,6 +113,13 @@ export default function ConfirmationPage() {
 
       toast.success("Location updated successfully!");
       
+      // Mark one-time setup complete for this collector
+      try {
+        if (user?.id) {
+          localStorage.setItem(`collectorSetup:${user.id}`, "true");
+        }
+      } catch {}
+
       // Redirect to home page (collector dashboard)
       setTimeout(() => {
         router.push("/");

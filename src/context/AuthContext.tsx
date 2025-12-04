@@ -68,11 +68,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       // Check if user is a collector without location set
       if (res.user.user_type === "collector") {
-        // Check if collector has location
         const collectorHasLocation = res.user.location !== null && res.user.location !== undefined;
-        
-        if (!collectorHasLocation) {
-          // Redirect to confirmation page to set location
+        // persistent one-time setup flag per user
+        let hasCompletedSetup = false;
+        try {
+          const flag = localStorage.getItem(`collectorSetup:${res.user.id}`);
+          hasCompletedSetup = flag === "true";
+        } catch {}
+
+        if (!collectorHasLocation && !hasCompletedSetup) {
+          // Redirect to confirmation page to set location only once
           router.push("/confirmation");
           return;
         }

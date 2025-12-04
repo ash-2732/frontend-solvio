@@ -7,6 +7,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { Loader2, MessageSquare, QrCode, Clock, CheckCircle, User, DollarSign, Weight, MapPin, Sparkles, ChevronDown, ChevronUp, Package } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function MyListingsPage() {
     const { token } = useAuth();
@@ -14,6 +15,7 @@ export default function MyListingsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [expandedListings, setExpandedListings] = useState<Set<string>>(new Set());
+    const router = useRouter();
 
     useEffect(() => {
         const fetchListings = async () => {
@@ -85,6 +87,7 @@ export default function MyListingsPage() {
                                 <div 
                                     key={listing.id}
                                     className="bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-all overflow-hidden"
+                                    onClick={() => router.push(`/user/my-listings/${listing.id}`)}
                                 >
                                     {/* Main Card */}
                                     <div className="p-6">

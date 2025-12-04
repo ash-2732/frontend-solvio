@@ -183,6 +183,7 @@ export default function PickupPage() {
                                 const acceptedBid = bids.find(bid => bid.status === 'accepted');
                                 
                                 return (
+                                <Link href={`/user/my-listings/${listing.id}`}>
                                 <div 
                                     key={listing.id} 
                                     className="bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-all overflow-hidden"
@@ -505,6 +506,7 @@ export default function PickupPage() {
                                         </div>
                                     )}
                                 </div>
+                                </Link>
                                 );
                             })}
                         </div>

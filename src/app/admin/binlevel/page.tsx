@@ -903,23 +903,6 @@ export default function BinLevelPage() {
 
               {/* Modal Body */}
               <div className="p-6 space-y-6">
-                {/* Current Fill Level */}
-                <div className="bg-linear-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Activity className="w-6 h-6 text-blue-600" />
-                    <h3 className="text-lg font-semibold text-slate-800">Current Fill Level</h3>
-                  </div>
-                  <div className="text-4xl font-bold text-blue-600">
-                    {predictionResult.current_fill_level_percent.toFixed(1)}%
-                  </div>
-                  <div className="mt-3 bg-slate-200 rounded-full h-3 overflow-hidden">
-                    <div
-                      className="bg-linear-to-r from-blue-500 to-cyan-500 h-full transition-all duration-500"
-                      style={{ width: `${predictionResult.current_fill_level_percent}%` }}
-                    />
-                  </div>
-                </div>
-
                 {/* Predicted Time to Full */}
                 <div className="bg-linear-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                   <div className="flex items-center gap-3 mb-3">

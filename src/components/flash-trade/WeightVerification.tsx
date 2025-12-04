@@ -217,7 +217,7 @@ export default function WeightVerification({
                                 setError(null);
                             }}
                             placeholder="e.g. 1.5"
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none"
+                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none text-black"
                         />
                         <p className="text-xs text-slate-500 mt-2 flex items-center gap-1">
                             <AlertTriangle className="w-3 h-3" />

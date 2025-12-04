@@ -69,10 +69,18 @@ export default function WeightVerification({
         setError(null);
 
         try {
+            // Parse QR data to extract bid_id
+            // QR format: "transaction:{bid_id}:{listing_id}:{amount}:confirm"
+            const parts = scannedData.split(':');
+            if (parts.length < 3 || parts[0] !== 'transaction') {
+                throw new Error("Invalid QR code format");
+            }
+            const bidIdFromQR = parts[1];
+
             const res = await apiRequest(`/bids/confirm-weight?confirm_excessive_weight=${confirmExcessive}`, {
                 method: "POST",
                 body: JSON.stringify({
-                    qr_data: scannedData,
+                    bid_id: bidIdFromQR,
                     weight_kg: parseFloat(weightInput),
                 }),
                 auth: true,
@@ -81,7 +89,7 @@ export default function WeightVerification({
             onVerified(res.weight_kg);
         } catch (e: any) {
             console.error(e);
-            if (e.message?.includes("significantly above average")) {
+            if (e.message?.includes("significantly above average") || e.message?.includes("weight_exceeds_normal")) {
                 setError(e.message);
                 setConfirmExcessive(true); // Allow retry with confirmation
             } else {

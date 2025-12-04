@@ -295,7 +295,7 @@ export default function BinLevelPage() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {/* Average Fill Level */}
             <div className="bg-white/50 backdrop-blur-sm border border-slate-200/60 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-2">
@@ -307,16 +307,6 @@ export default function BinLevelPage() {
               <p className="text-2xl font-bold text-slate-900 mt-1">{stats.avgFillLevel}%</p>
             </div>
 
-            {/* Max Fill Level */}
-            <div className="bg-white/50 backdrop-blur-sm border border-slate-200/60 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-2">
-                <div className="w-10 h-10 bg-linear-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-white" />
-                </div>
-              </div>
-              <p className="text-sm text-slate-600 font-medium">Max Fill Level</p>
-              <p className="text-2xl font-bold text-red-600 mt-1">{stats.maxFillLevel}%</p>
-            </div>
 
             {/* Avg Fill Rate */}
             <div className="bg-white/50 backdrop-blur-sm border border-slate-200/60 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">

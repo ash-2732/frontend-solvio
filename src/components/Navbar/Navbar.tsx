@@ -187,7 +187,7 @@ export default function Navbar() {
                   Bin Level
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/admin/hotspot"
                   className="hover:text-green-600 transition-colors duration-200 flex items-center gap-2"
@@ -210,7 +210,7 @@ export default function Navbar() {
                   </svg>
                   Hotspot
                 </Link>
-              </li>
+              </li> */}
               
             </>
           ) : isCollector ? (
@@ -233,7 +233,7 @@ export default function Navbar() {
                   Notifications
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/collector/reports"
                   className={`${roleColors.primaryHover} transition-colors duration-200 flex items-center gap-2`}
@@ -241,7 +241,7 @@ export default function Navbar() {
                   <Trash2 className="w-4 h-4" />
                   Reports
                 </Link>
-              </li>
+              </li> */}
             </>
           ) : isKabadiwala ? (
             <>
